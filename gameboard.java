@@ -262,7 +262,7 @@ public class Gameboard {
 				int col = rand.nextInt(boardSize);
 				int row = rand.nextInt(boardSize);
 				
-				if (gameBoard[row][col] != 0)
+				if (gameBoard[row][col] != -1)
 					continue start;
 				if (horizontal) {
 					
