@@ -37,11 +37,11 @@ public class Gameboard {
 	//}
 	
 
-	// initializing the whole board to empty ('E')
+	// initializing the whole board to empty (-1)
 	private void fillBoard() {
 		for(int i = 0; i < boardSize; i++) {
 			for (int j = 0; j < boardSize; j++) {
-				gameBoard[i][j] = 0;
+				gameBoard[i][j] = -1;
 			}
 		}
 	}
