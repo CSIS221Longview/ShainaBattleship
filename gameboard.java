@@ -37,11 +37,11 @@ public class Gameboard {
 	//}
 	
 
-	// initializing the whole board to empty (-1)
+	// initializing the whole board to empty ('E')
 	private void fillBoard() {
 		for(int i = 0; i < boardSize; i++) {
 			for (int j = 0; j < boardSize; j++) {
-				gameBoard[i][j] = -1;
+				gameBoard[i][j] = 'E';
 			}
 		}
 	}
@@ -53,7 +53,7 @@ public class Gameboard {
 		fillBoard();
 		positionShips();
 		
-		System.out.print("     ");
+		System.out.print("   ");
 		for (int i = 0; i < gameBoard[0].length; i++) {
 			System.out.printf("%3d", i+1);
 
@@ -63,7 +63,7 @@ public class Gameboard {
 		//loop through array's rows
 		for (int row = 0; row < gameBoard.length; row++)
 		{	
-			System.out.print(" ");
+			//System.out.print(" ");
 			System.out.printf("%3c", getLetter(row+1));
 	
 			// loop through columns of current row
@@ -243,7 +243,7 @@ public class Gameboard {
 	// method to position ships
 	public void positionShips() 
 	{
-		//fillBoard();
+		fillBoard();
 		difficultyInfo();
 		createShipArray();
 		//System.out.println("The board size is " + boardSize);
@@ -262,8 +262,8 @@ public class Gameboard {
 				int col = rand.nextInt(boardSize);
 				int row = rand.nextInt(boardSize);
 				
-				if (gameBoard[row][col] != -1)
-					continue start;
+			//	if (gameBoard[row][col] != 'E')
+				//	continue start;
 				if (horizontal) {
 					
 					for (int i = 0; i < shipLengthArray.get(j); i++) {
@@ -299,6 +299,9 @@ public class Gameboard {
 		
 	 }
 	 
+
+
+}
 
 
 }
