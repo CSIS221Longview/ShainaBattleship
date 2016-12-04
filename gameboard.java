@@ -1,3 +1,20 @@
+Skip to content
+This repository
+Search
+Pull requests
+Issues
+Gist
+ @ShainaR
+ Unwatch 1
+  Star 0
+ Fork 0 ShainaR/Battleship
+ Code  Issues 0  Pull requests 0  Projects 0  Wiki  Pulse  Graphs  Settings
+Branch: master Find file Copy pathBattleship/gameboard.java
+4d17a2e  19 hours ago
+@ShainaR ShainaR Update gameboard.java
+1 contributor
+RawBlameHistory     
+293 lines (219 sloc)  6.96 KB
 package battleshipgame;
 import java.util.ArrayList;
 import java.util.Random;
@@ -5,34 +22,28 @@ import java.util.Scanner;
 
 
 public class Gameboard {
-
-	// Declare constants
-	String EMPTY_SPACE = "0";
-	
-	// ships
-	private int AIRCRAFT=5;
-	private int BATTLESHIP=4;
-	private int DESTROYER=3;
-	private int SUBMARINE=3;
-	private int PATROL=2;
 	
 	// hits and misses
 	private int hits, misses;
-	// private ArrayList<String> location = new ArrayList<String>();
+	private ArrayList<Integer> shipLengthArray = new ArrayList<Integer>();
+	private ArrayList<Integer> shipCharArray = new ArrayList<Integer>();
 	int guess;
 	private int level;
 	private int availableMissiles;
 	private int boardSize;
 	private char[][] gameBoard;
-	private int ship;
 	private int shipSize;
-	private char shipMarker;
+	private int shipMarker;
+	private int ship;
 	private String shipString;
+	private Ships ships;
 	
+
 	Random rand = new Random();
 	
 	// Scanner to retain user input
 	Scanner input = new Scanner(System.in);
+	
 	
 	//constructor for Gameboard
 
@@ -41,25 +52,40 @@ public class Gameboard {
 		//outputGame();
 	//}
 	
+
+	// initializing the whole board to empty ('E')
+	private void fillBoard() {
+		for(int i = 0; i < boardSize; i++) {
+			for (int j = 0; j < boardSize; j++) {
+				gameBoard[i][j] = 'E';
+			}
+		}
+	}
+
 	
 	// method to print board
 	public void outputGame() 
 	{ 
-		System.out.print("   ");
+		fillBoard();
+		positionShips();
+		
+		System.out.print("     ");
 		for (int i = 0; i < gameBoard[0].length; i++) {
-			System.out.printf("%4d", i+1);
+			System.out.printf("%3d", i+1);
+
 		}
 		
 		System.out.println();
 		//loop through array's rows
 		for (int row = 0; row < gameBoard.length; row++)
-		{	 
+		{	
+			System.out.print(" ");
 			System.out.printf("%3c", getLetter(row+1));
 	
 			// loop through columns of current row
-			for (int column = 0; column < gameBoard.length; column++) {
-				    // gameBoard[row][column] = '~';
-					System.out.printf("%3s", gameBoard[row][column]);
+			for (int column = 0; column < gameBoard[0].length; column++) {
+				   // gameBoard[row][column] = '~';
+					System.out.printf("%3c", gameBoard[row][column]);
 					
 				//System.out.print(gameBoard[row][column]);
 			}
@@ -124,6 +150,7 @@ public class Gameboard {
 	
 	public void set(char[][] gameBoard){
 		this.gameBoard=gameBoard;
+		return;
 	}
 	
 	public int missiles(int bombs) {
@@ -135,36 +162,10 @@ public class Gameboard {
 		size = this.boardSize;
 		return size;
 	}
+
 	
 	//SHIP CLASS
-	// constructor for ships-should I create class just for ships?
-	
-	//public Ship(String shipString, char shipMarker, int shipSize){
-		//this.shipString = shipString;
-		//this.shipMarker = shipMarker;
-		//this.shipSize = shipSize;
-	//}
-	
-	
-	// get ship location
-	//public ArrayList<String> getLocations() {
-	//	return location;
-	//}
-	
-	// get ship String
-	public String getShipString(){
-		return this.shipString;
-	}
-	
-	// get ship size
-	public int getSize(){
-		return this.shipSize;
-	}
-	
-	// method to set random location of ships
-	//public void setShips(ArrayList<String> locToSet) {
-	//	this.location.addAll(locToSet);
-	//}
+	/*
 	
 	// method to check user's guess
 	public String checkGuess(String userGuess) {
@@ -185,87 +186,126 @@ public class Gameboard {
 		
 		return result;
 	}
+	*/
 	
 	// method to track score
 	public int trackScore(int score) {
 		return score;
 	}
 	
-	// method to set ship info
-	public void setShipInfo()
-	{
-		System.out.println();
-		// ship = 3;
-		String shipString = null;
-		switch(ship){
-		case 1: shipString = "AIRCRAFT";
-				shipMarker = 'A';
-				shipSize = 5;
-				break;
-		case 2: shipString = "BATTLESHIP";
-				shipMarker = 'B';
-				shipSize = 4;
-				break;
-		case 3: shipString = "DESTROYER";
-				shipMarker = 'D';
-				shipSize = 3;
-				break;
-		case 4: shipString = "SUBMARINE";
-				shipMarker = 'S';
-				shipSize = 3;
-				break;
-		case 5: shipString = "PATROL";
-				shipMarker = 'P';
-				shipSize = 2;	
-				break;
+	
+	public enum Ships {
+		
+		// int shipMarker is later converted to char.
+		// these values are according to our getLetter method to convert to ascii values
+		AIRCRAFT (5, 1, "Aircraft Carrier"),
+		BATTLESHIP (4, 2, "Battleship"),
+		DESTROYER (3, 4, "Destroyer"),
+		SUBMARINE (3, 19, "Submarine"),
+		PATROL (2, 16, "Patrol");
+		
+		// instance fields
+		final int shipSize;
+		final int shipMarker;
+		final String shipString;
+		
+		// enum constructor
+		Ships(int shipSize, int shipMarker, String shipString) {
+			this.shipSize = shipSize;
+			this.shipMarker = shipMarker;
+			this.shipString = shipString;
 		}
-		System.out.println(shipMarker);
+		
+		public int getShipLength() {
+			return shipSize;
+		}
+		
+		public int getShipMarker() {
+			return shipMarker;
+		}
+		
+		public String getShipString() {
+			return shipString;
+		}
 	}
 	
+	// add ships from enum ship class to array list
+	// allows access in ship positioning method
+	public void createShipArray(){
+		//stores each ship length from enum
+		shipLengthArray.add(ships.AIRCRAFT.getShipLength()); 
+		shipLengthArray.add(ships.BATTLESHIP.getShipLength()); 
+		shipLengthArray.add(ships.DESTROYER.getShipLength()); 
+		shipLengthArray.add(ships.SUBMARINE.getShipLength()); 
+		shipLengthArray.add(ships.PATROL.getShipLength()); 
+		
+		// stores each ship marker from enum
+		shipCharArray.add(ships.AIRCRAFT.getShipMarker());
+		shipCharArray.add(ships.BATTLESHIP.getShipMarker());
+		shipCharArray.add(ships.DESTROYER.getShipMarker());
+		shipCharArray.add(ships.SUBMARINE.getShipMarker());
+		shipCharArray.add(ships.PATROL.getShipMarker());
+		
+
+		//System.out.print(shipLengthArray.size());
+		//System.out.println();
+		
+		//for (int i = 0; i < shipLengthArray.size(); i++) {
+		//System.out.println(shipLengthArray.get(i));
+		//System.out.println(getLetter(shipCharArray.get(i)));
+		//}
+	}
 	
 	// method to position ships
-		public void positionShips() 
-		{
+	public void positionShips() 
+	{
+		difficultyInfo();
+		createShipArray();
+		//System.out.println("The board size is " + boardSize);
+					
+			boolean shipsOnBoard = false;
+			
+			
+				
+				//boolean placeHorizontal = rand.nextBoolean();
+		while (!shipsOnBoard){		
+				// generate random number for ship placement, either vertical or horizontal starting place
+				int col = rand.nextInt(boardSize);
+				int row = rand.nextInt(boardSize);
+				
+				
+				//loops through arrayLists that hold enum values for shipSize and shipMarker
+				for (int j = 0; j < shipLengthArray.size();j++) {
+					
+					for (int i = 0; i < shipLengthArray.get(j); i++) {
+					gameBoard[row][i+1] = getLetter(shipCharArray.get(j));	
+					//System.out.println("j = " + j);
+					}
+					
+					// generate new random for next ship
+				
+					row = rand.nextInt(boardSize);
+					// if either row or column is not empty ('E') then start the iteration over again
+					//if (gameBoard[row][i+1] != 'E')
+						//continue;
 
-			ship = 1;
-		while (ship < 5) {	
-			if (ship == 1) {
-			int temp = rand.nextInt(boardSize);
-			for (int i = 0; i < 5; i++) 
-			gameBoard[i+1][temp] = 'A';
-			temp++;
-			} 
-			ship = 2;
-			if (ship == 2) {
-				int temp = rand.nextInt(boardSize);
-				for (int i = 0; i < 4; i++)
-				gameBoard[i+1][temp] = 'B';
-				temp++;
-			}
-			ship = 3;
-			if (ship == 3) {
-				int temp = rand.nextInt(boardSize);
-				for (int i = 0; i < 3; i++)
-				gameBoard[i+1][temp] = 'D';
-				temp++;
-			}
-			ship = 4;
-			if (ship == 4) {
-				int temp = rand.nextInt(boardSize);
-				for (int i = 0; i < 3; i++)
-				gameBoard[i+1][temp] = 'S';
-				temp++;
-			}
-			ship = 5;
-			if (ship == 5) {
-				int temp = rand.nextInt(boardSize) ;
-				for (int i = 0; i < 2; i++)
-				gameBoard[i+1][temp] = 'P';
-				temp++;
-			}
-			outputGame();
-		} 
+				}
+				shipsOnBoard = true;
+
 		}
+			
+
 		
-		
+	 }
+	 
+
+
 }
+
+
+		
+
+	
+
+Contact GitHub API Training Shop Blog About
+© 2016 GitHub, Inc. Terms Privacy Security Status Help
