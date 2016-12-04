@@ -1,20 +1,3 @@
-Skip to content
-This repository
-Search
-Pull requests
-Issues
-Gist
- @ShainaR
- Unwatch 1
-  Star 0
- Fork 0 ShainaR/Battleship
- Code  Issues 0  Pull requests 0  Projects 0  Wiki  Pulse  Graphs  Settings
-Branch: master Find file Copy pathBattleship/gameboard.java
-4d17a2e  19 hours ago
-@ShainaR ShainaR Update gameboard.java
-1 contributor
-RawBlameHistory     
-293 lines (219 sloc)  6.96 KB
 package battleshipgame;
 import java.util.ArrayList;
 import java.util.Random;
@@ -23,6 +6,7 @@ import java.util.Scanner;
 
 public class Gameboard {
 	
+	private int EMPTY_SPACE = 0;
 	// hits and misses
 	private int hits, misses;
 	private ArrayList<Integer> shipLengthArray = new ArrayList<Integer>();
@@ -57,7 +41,7 @@ public class Gameboard {
 	private void fillBoard() {
 		for(int i = 0; i < boardSize; i++) {
 			for (int j = 0; j < boardSize; j++) {
-				gameBoard[i][j] = 'E';
+				gameBoard[i][j] = -1;
 			}
 		}
 	}
@@ -259,38 +243,55 @@ public class Gameboard {
 	// method to position ships
 	public void positionShips() 
 	{
+		fillBoard();
 		difficultyInfo();
 		createShipArray();
 		//System.out.println("The board size is " + boardSize);
 					
-			boolean shipsOnBoard = false;
 			
+			//loops through arrayLists that hold enum values for shipSize and shipMarker
+			for (int j = 0; j < shipLengthArray.size();j++) {
+				boolean shipsOnBoard = false;
 			
+			start:
+			while (!shipsOnBoard){		
 				
-				//boolean placeHorizontal = rand.nextBoolean();
-		while (!shipsOnBoard){		
+				boolean horizontal = rand.nextBoolean();
+
 				// generate random number for ship placement, either vertical or horizontal starting place
 				int col = rand.nextInt(boardSize);
 				int row = rand.nextInt(boardSize);
 				
-				
-				//loops through arrayLists that hold enum values for shipSize and shipMarker
-				for (int j = 0; j < shipLengthArray.size();j++) {
+				if (gameBoard[row][col] != 0)
+					continue start;
+				if (horizontal) {
 					
 					for (int i = 0; i < shipLengthArray.get(j); i++) {
-					gameBoard[row][i+1] = getLetter(shipCharArray.get(j));	
+					gameBoard[row][i+1] = getLetter(shipCharArray.get(j));
+					
 					//System.out.println("j = " + j);
 					}
+
 					
+				} else { //vertically
+					
+					for (int i = 0; i < shipLengthArray.get(j); i++) {
+						gameBoard[i+1][col] = getLetter(shipCharArray.get(j));	
+						
+						//System.out.println("j = " + j);
+					}
+					
+					
+				}
+			
 					// generate new random for next ship
 				
-					row = rand.nextInt(boardSize);
+					//row = rand.nextInt(boardSize);
 					// if either row or column is not empty ('E') then start the iteration over again
-					//if (gameBoard[row][i+1] != 'E')
-						//continue;
-
-				}
+					
 				shipsOnBoard = true;
+				}
+				
 
 		}
 			
@@ -301,11 +302,3 @@ public class Gameboard {
 
 
 }
-
-
-		
-
-	
-
-Contact GitHub API Training Shop Blog About
-© 2016 GitHub, Inc. Terms Privacy Security Status Help
