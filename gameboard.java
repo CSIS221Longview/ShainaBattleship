@@ -243,7 +243,7 @@ public class Gameboard {
 	// method to position ships
 	public void positionShips() 
 	{
-		fillBoard();
+		//fillBoard();
 		difficultyInfo();
 		createShipArray();
 		//System.out.println("The board size is " + boardSize);
